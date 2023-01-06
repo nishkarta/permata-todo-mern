@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 
 //get all tasks
 const getTasks = async (req, res) => {
-    const tasks = await Task.find({}).sort({ createdAt: -1 })
+    const user_id = req.user._id
+    const tasks = await Task.find({ user_id }).sort({ createdAt: -1 })
 
     res.status(200).json(tasks)
 }
@@ -38,8 +39,9 @@ const getTask = async (req, res) => {
 const createTask = async (req, res) => {
     const { title, category_id } = req.body
     try {
+        const user_id = req.user._id
         const task = await Task.create({
-            title, is_active: true, category_id
+            title, is_active: true, category_id, user_id
         })
         res.status(200).json(task)
     } catch (err) {
